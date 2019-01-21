@@ -1,0 +1,19 @@
+
+<table>
+    <tr>
+        <th>Prénom</th>
+        <th>Âge</th>
+    </tr>
+
+    {% for student in pagination %}
+
+        <tr><td>{{ student.prenom }}</td><td>{{ student.age }}</td></tr>
+
+    {% endfor %}
+
+</table>
+
+{# display navigation #}
+<div class="navigation">
+    {{ knp_pagination_render(pagination) }}
+</div>
