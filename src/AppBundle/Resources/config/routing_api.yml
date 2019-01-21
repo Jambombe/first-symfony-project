@@ -1,0 +1,15 @@
+api_users:
+  path: /users # En vrai : /api/users. Le prefix '/api' se trouve dans 'app/config/routing.yml'
+  defaults: { _controller: AppBundle:Api/User:getAll }
+
+api_user_by_id:
+  path: /user/{id}
+  defaults: { _controller: AppBundle:Api/User:getById, id: null }
+  requirements:
+    id: \d+
+
+api_user_by_email:
+  path: /user/{email}
+  defaults: { _controller: AppBundle:Api/User:getByEmail, email: null }
+  requirements:
+    email: .+

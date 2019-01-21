@@ -1,3 +1,7 @@
 app:
     resource: '@AppBundle/Controller/'
     type: annotation
+
+api:
+    resource: '@AppBundle/Resources/config/routing_api.yml'
+    prefix: /api # Tout ce qui commence par /api dans l'url
