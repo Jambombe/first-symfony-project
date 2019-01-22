@@ -40,14 +40,20 @@ class UserController extends Controller
 
     public function getByEmailAction(Request $r)
     {
-        $email = $r->get('email'); // On recupère le parametre 'email' (defini dans la route)
-
+//        $email = $r->get('email'); // On recupère le parametre 'email' (defini dans la route)
+        $email = $r->attributes->filter('email', null, FILTER_VALIDATE_EMAIL);
         // Si on a bien une adresse email
-        if (filter_var($email, FILTER_VALIDATE_EMAIL))
+//        if (filter_var($email, FILTER_VALIDATE_EMAIL))
+        if ($email)
         {
-            return $this->json($this->getByEmail($email));
+            if ( ! empty($rep = $this->getByEmail($email)))
+            {
+                return $this->json($rep, JsonResponse::HTTP_FOUND);
+            } else {
+                return $this->jsonNotFound();
+            }
         } else {
-            return $this->json(null, JsonResponse::HTTP_NOT_FOUND);
+            return $this->jsonNotFound();
         }
         return false;
     }
@@ -63,6 +69,11 @@ class UserController extends Controller
                 break;
             }
         }
+    }
+
+    private function jsonNotFound()
+    {
+        return $this->json(array('status' => 'notFound'), JsonResponse::HTTP_NOT_FOUND);
     }
 
     private function users()

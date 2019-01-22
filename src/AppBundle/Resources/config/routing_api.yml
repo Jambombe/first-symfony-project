@@ -12,4 +12,4 @@ api_user_by_email:
   path: /user/{email}
   defaults: { _controller: AppBundle:Api/User:getByEmail, email: null }
   requirements:
-    email: .+
+    email: \S+
