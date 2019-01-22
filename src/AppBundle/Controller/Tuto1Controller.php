@@ -2,6 +2,7 @@
 // src/AppBundle/Controller/Tuto1Controller.php
 namespace AppBundle\Controller;
 
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -41,12 +42,12 @@ class Tuto1Controller extends Controller
     /**
      * @Route("/tuto1/list")
      */
-    public function listAction(Request $request)
+    public function listAction(Request $request, PaginatorInterface $paginator)
     {
 //        $students = $this->loadStudents();
         $students = $this->loadStudentsV2();
 
-        $paginator = $this->get('knp_paginator');
+//        $paginator = $this->get('knp_paginator'); // Autre solution : dans la signature de la methode
         $pagination = $paginator->paginate(
             $students, // donnees
             $request->query->getInt('page', 1), // num page lors du chargement
