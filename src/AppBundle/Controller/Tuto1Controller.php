@@ -6,6 +6,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class Tuto1Controller extends Controller
 {
@@ -109,7 +110,7 @@ class Tuto1Controller extends Controller
 
     private function loadStudentsV2()
     {
-        $json = file_get_contents('http://cdw.develop/app_dev.php/api/users');
+        $json = file_get_contents($this->generateUrl('api_users', [], UrlGeneratorInterface::ABSOLUTE_URL)); // Permet d'avoir l'url à atteindre à partir de la route correspondante
         $arr = json_decode($json);
 
         return $arr;
