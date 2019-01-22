@@ -42,7 +42,8 @@ class Tuto1Controller extends Controller
      */
     public function listAction(Request $request)
     {
-        $students = $this->loadStudents();
+//        $students = $this->loadStudents();
+        $students = $this->loadStudentsV2();
 
         $paginator = $this->get('knp_paginator');
         $pagination = $paginator->paginate(
@@ -52,6 +53,39 @@ class Tuto1Controller extends Controller
         );
 
         return $this->render('tuto1/list.html.twig', array('pagination' => $pagination));
+    }
+
+    /**
+     * @Route("/tuto1/sendmail/{email}")
+     */
+    public function sendEmailAction(Request $r, \Swift_Mailer $mailer)
+    {
+        $email = $r->get('email'); // On recupère le parametre 'email' (defini dans la route)
+
+        // Si on a pas une adresse email valide
+        if (! filter_var($email, FILTER_VALIDATE_EMAIL))
+        {
+            $email = 'lucas.barneoudarnaud@gmail.com'; // adresse par defaut
+        }
+
+        $message = (new \Swift_Message('mail test'))
+            ->setFrom('cdw2k18@gmail.com')
+            ->setTo($email)
+            ->setBody(
+                $this->renderView(
+                    'tuto1/email.html.twig',
+                    ['email' => $email]
+                ),
+                'text/html'
+            );
+
+        $mailer->send($message);
+
+        return $this->render(
+            'tuto1/email.html.twig',
+            ['email' => $email,]
+        );
+
     }
 
     private function loadStudents()
@@ -71,6 +105,14 @@ class Tuto1Controller extends Controller
         array_push($array, array('prenom'=>'k', 'age'=> 11));
 
         return $array;
+    }
+
+    private function loadStudentsV2()
+    {
+        $json = file_get_contents('http://cdw.develop/app_dev.php/api/users');
+        $arr = json_decode($json);
+
+        return $arr;
     }
 }
 

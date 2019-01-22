@@ -2,6 +2,7 @@
 // src/AppBundle/Controller/Api/UserController.php
 namespace AppBundle\Controller\Api;
 
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -46,7 +47,7 @@ class UserController extends Controller
         {
             return $this->json($this->getByEmail($email));
         } else {
-            return new Response("{'status': 'notFound'}", Response::HTTP_NOT_FOUND, ['content-type' => 'text/html']);
+            return $this->json(null, JsonResponse::HTTP_NOT_FOUND);
         }
         return false;
     }
