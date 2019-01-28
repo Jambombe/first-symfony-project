@@ -74,6 +74,10 @@ nav a:hover{
     color: #fff;
 }
 
+li.active-link{
+    background-color: #999;
+}
+
 #content{
     flex: auto;
     min-width: 0;

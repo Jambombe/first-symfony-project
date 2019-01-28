@@ -102,7 +102,7 @@ class UserController extends Controller
             ->setTo($email)
             ->setBody(
                 $this->renderView(
-                    'user/email.html.twig',
+                    'user/pages/email.html.twig',
                     ['email' => $email]
                 ),
                 'text/html'
@@ -111,7 +111,7 @@ class UserController extends Controller
         $mailer->send($message);
 
         return $this->render(
-            'user/email.html.twig',
+            'user/pages/email.html.twig',
             ['email' => $email,]
         );
 

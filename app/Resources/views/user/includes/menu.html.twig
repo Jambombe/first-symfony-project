@@ -1,6 +1,9 @@
+{% set currentPath = path(app.request.get('_route'),
+    app.request.get('_route_params')) %}
+{#{{ dump(currentPath) }}#}
 <nav>
     <ul>
         <li><a href="">Inscription</a></li>
-        <li><a href="http://cdw.develop/users/list">Liste des utilisateurs</a></li>
+        <li {% if currentPath is same as('/users/list') %}class="active-link"{% endif %}><a href="http://cdw.develop/users/list">Liste des utilisateurs</a></li>
     </ul>
 </nav>
