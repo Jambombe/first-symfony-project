@@ -1,0 +1,47 @@
+{% extends 'user/layout.html.twig' %}
+
+{% block title %}
+    {{ parent() }} - Liste des utilisateurs
+{% endblock %}
+
+{% block content %}
+<div id="wrapper">
+    <div id="container">
+        <table>
+            <tr>
+                <th></th>
+                <th>Prénom</th>
+                <th>Âge</th>
+                <th>Email</th>
+            </tr>
+
+            {% for student in pagination %}
+
+                <tr>
+                    <td>
+                        <a href="http://cdw.develop/user/{{ student.id }}" title="Voir profil">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                    </td>
+                    <td>{{ student.prenom }}</td>
+                    <td>{{ student.age }}</td>
+                    <td>
+                        <a href="http://cdw.develop/app_dev.php/tuto1/sendmail/{{ student.email }}" title="Envoyer un joli mail :)">
+                            {{ student.email }}
+                        </a>
+                    </td>
+                </tr>
+
+            {% endfor %}
+
+        </table>
+
+        <div>Nombre d'étudiants : {{ pagination.getTotalitemCount }}</div>
+
+        {# display navigation #}
+        <div class="navigation">
+            {{ knp_pagination_render(pagination) }}
+        </div>
+    </div>
+</div>
+{% endblock %}

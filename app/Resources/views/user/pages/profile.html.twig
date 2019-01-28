@@ -1,0 +1,21 @@
+{% extends 'user/layout.html.twig' %}
+
+{% block title %}
+    {{ parent() }} - Liste des utilisateurs
+{% endblock %}
+
+{% block content %}
+<div id="wrapper">
+    <div id="container">
+        <h2>{{ user.prenom|lower }} {{ user.nom | upper }}</h2>
+        <ul>
+            <li>
+                Date de naissance : {{ user.date_naissance | date('d/m/Y')}}
+            </li>
+            <li>
+                Age : {{ user.age }}
+            </li>
+        </ul>
+    </div>
+</div>
+{% endblock %}

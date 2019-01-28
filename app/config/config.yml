@@ -27,7 +27,10 @@ framework:
         save_path: '%kernel.project_dir%/var/sessions/%kernel.environment%'
     fragments: ~
     http_method_override: true
-    assets: ~
+    assets:
+        packages:
+            user_css:
+                base_path: '/css/user'
     php_errors:
         log: true
 
@@ -35,6 +38,8 @@ framework:
 twig:
     debug: '%kernel.debug%'
     strict_variables: '%kernel.debug%'
+    globals:
+        copyright: "%copyright%"
 
 # Doctrine Configuration
 doctrine:

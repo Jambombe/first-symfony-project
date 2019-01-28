@@ -1,0 +1,90 @@
+html{ height: 100%;}
+body { background: #F5F5F5; font: 18px/1.5 sans-serif; margin: 0; height: 100%; }
+h1, h2 { line-height: 1.2; margin: 0 0 .5em; display: inline-block;}
+h1 { font-size: 36px; }
+h2 { font-size: 21px; margin-bottom: 1em; }
+p { margin: 0 0 1em 0; }
+a { color: #00f; text-decoration: none;}
+a:hover { color: #868FFF; border: solid #000000; border-width: 2px 0;}
+code { background: #F5F5F5; max-width: 100px; padding: 2px 6px; word-wrap: break-word; }
+#wrapper { background: #FFF; margin: 1em auto; max-width: 800px; width: 95%; }
+#container { padding: 2em; }
+#welcome, #status { margin-bottom: 2em; }
+#welcome h1 span { display: block; font-size: 75%; }
+#icon-status, #icon-book { float: left; height: 64px; margin-right: 1em; margin-top: -4px; width: 64px; }
+#icon-book { display: none; }
+
+@media (min-width: 768px) {
+    #wrapper { width: 80%; margin: 2em auto; }
+    #icon-book { display: inline-block; }
+    #status a, #next a { display: block; }
+
+    @-webkit-keyframes fade-in { 0% { opacity: 0; } 100% { opacity: 1; } }
+    @keyframes fade-in { 0% { opacity: 0; } 100% { opacity: 1; } }
+    .sf-toolbar { opacity: 0; -webkit-animation: fade-in 1s .2s forwards; animation: fade-in 1s .2s forwards;}
+}
+
+table {
+    text-align: center;
+}
+
+header{
+    height: 50px;
+    background-color: #313131;
+    padding: 5px;
+    color: #fff;
+    vertical-align: center;
+    font-size: 36px;
+}
+
+#body-wrapper{
+    display: flex;
+    flex-direction: row;
+    min-height: 100%;
+    height: auto !important;
+}
+
+nav{
+    width: 250px;
+    /*min-height: 500px;*/
+    height: auto;
+    padding: 5px;
+    background-color: #565656;
+    color: #fff;
+    flex: 0 0 250px;
+}
+ul{
+    /*padding: 0;*/
+    list-style: none;
+}
+
+li {
+    width: 100%;
+    margin: 10px 0;
+}
+
+nav a{
+    width: 200px !important;
+    height: 50px;
+    padding: 10px 0;
+    color: #fff;
+}
+
+nav a:hover{
+    color: #fff;
+}
+
+#content{
+    flex: auto;
+    min-width: 0;
+    background-color: #eee;
+}
+
+footer{
+    height: 50px;
+    line-height: 50px;
+    text-align: center;
+    color: #FFF;
+    background-color: #222;
+    vertical-align: center;
+}

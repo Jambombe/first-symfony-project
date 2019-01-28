@@ -80,17 +80,17 @@ class UserController extends Controller
     {
         $array = array();
 
-        array_push($array, array('id'=> 1, 'prenom'=>'a', 'age'=> 1, 'email'=>'lucas.barneoudarnaud@gmail.com'));
-        array_push($array, array('id'=> 2, 'prenom'=>'b', 'age'=> 2, 'email'=>'lucas.barneoudarnaud@gmail.com'));
-        array_push($array, array('id'=> 3, 'prenom'=>'c', 'age'=> 3, 'email'=>'lucas.barneoudarnaud@gmail.com'));
-        array_push($array, array('id'=> 4, 'prenom'=>'d', 'age'=> 4, 'email'=>'lucas.barneoudarnaud@gmail.com'));
-        array_push($array, array('id'=> 5, 'prenom'=>'e', 'age'=> 5, 'email'=>'lucas.barneoudarnaud@gmail.com'));
-        array_push($array, array('id'=> 6, 'prenom'=>'f', 'age'=> 6, 'email'=>'lucas.barneoudarnaud@gmail.com'));
-        array_push($array, array('id'=> 7, 'prenom'=>'g', 'age'=> 7, 'email'=>'lucas.barneoudarnaud@gmail.com'));
-        array_push($array, array('id'=> 8, 'prenom'=>'h', 'age'=> 8, 'email'=>'lucas.barneoudarnaud@gmail.com'));
-        array_push($array, array('id'=> 9, 'prenom'=>'i', 'age'=> 9, 'email'=>'lucas.barneoudarnaud@gmail.com'));
-        array_push($array, array('id'=> 10, 'prenom'=>'j', 'age'=> 10, 'email'=>'lucas.barneoudarnaud@gmail.com'));
-        array_push($array, array('id'=> 11, 'prenom'=>'k', 'age'=> 11, 'email'=>'lucas.barneoudarnaud@gmail.com'));
+        array_push($array, array('id'=> 1, 'nom'=>'a', 'prenom'=>'a', 'date_naissance'=>'01/01/2014', 'age'=> 1, 'email'=>'lucas.barneoudarnaud@gmail.com'));
+        array_push($array, array('id'=> 2, 'nom'=>'b', 'prenom'=>'b', 'date_naissance'=>'01/01/1998', 'age'=> 2, 'email'=>'lucas.barneoudarnaud@gmail.com'));
+        array_push($array, array('id'=> 3, 'nom'=>'c', 'prenom'=>'c', 'date_naissance'=>'01/01/1998', 'age'=> 3, 'email'=>'lucas.barneoudarnaud@gmail.com'));
+        array_push($array, array('id'=> 4, 'nom'=>'d', 'prenom'=>'d', 'date_naissance'=>'01/01/1998', 'age'=> 4, 'email'=>'lucas.barneoudarnaud@gmail.com'));
+        array_push($array, array('id'=> 5, 'nom'=>'e', 'prenom'=>'e', 'date_naissance'=>'01/01/1998', 'age'=> 5, 'email'=>'lucas.barneoudarnaud@gmail.com'));
+        array_push($array, array('id'=> 6, 'nom'=>'f', 'prenom'=>'f', 'date_naissance'=>'01/01/8751', 'age'=> 6, 'email'=>'lucas.barneoudarnaud@gmail.com'));
+        array_push($array, array('id'=> 7, 'nom'=>'g', 'prenom'=>'g', 'date_naissance'=>'01/01/1998', 'age'=> 7, 'email'=>'lucas.barneoudarnaud@gmail.com'));
+        array_push($array, array('id'=> 8, 'nom'=>'h', 'prenom'=>'h', 'date_naissance'=>'01/01/1998', 'age'=> 8, 'email'=>'lucas.barneoudarnaud@gmail.com'));
+        array_push($array, array('id'=> 9, 'nom'=>'i', 'prenom'=>'i', 'date_naissance'=>'01/01/1998', 'age'=> 9, 'email'=>'lucas.barneoudarnaud@gmail.com'));
+        array_push($array, array('id'=> 10, 'nom'=>'j', 'prenom'=>'j', 'date_naissance'=>'01/01/1998', 'age'=> 10, 'email'=>'lucas.barneoudarnaud@gmail.com'));
+        array_push($array, array('id'=> 11, 'nom'=>'k', 'prenom'=>'k', 'date_naissance'=>'01/01/1998', 'age'=> 11, 'email'=>'lucas.barneoudarnaud@gmail.com'));
 
         return $array;
     }

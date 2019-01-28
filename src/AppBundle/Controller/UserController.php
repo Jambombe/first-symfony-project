@@ -1,5 +1,5 @@
 <?php
-// src/AppBundle/Controller/Tuto1Controller.php
+// src/AppBundle/Controller/UserController.php
 namespace AppBundle\Controller;
 
 use Knp\Component\Pager\PaginatorInterface;
@@ -9,38 +9,43 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
-class Tuto1Controller extends Controller
+/**
+ * Class UserController
+ * @package AppBundle\Controller
+ * Possible d'ajouter "@Route('/user')" pour préfixer chaque route des actions de la classe par '/user'
+ */
+class UserController extends Controller
 {
-    // La route est accessible via /web/app_dev.php/tuto1/phrase
+    // La route est accessible via /web/app_dev.php/user/phrase
+//    /**
+//     * @Route("/user/phrase")
+//     */
+//    public function phraseAction()
+//    {
+//        return new Response(
+//            '<html><body>Oui ?</body></html>'
+//        );
+//    }
+
+    // La route est accessible via (navigateur) /web/app_dev.php/user/template
+    // Le template est ici : /app/Resources/views/user/index.html.twig
+//    /**
+//     * @Route("/user/template")
+//     */
+//    public function templateAction()
+//    {
+//
+//        $phrase = "Je suis la phrase";
+//
+//        return $this->render('user/index.html.twig', [
+//            'phrase' => $phrase
+//        ]);
+//
+//        // On peut ne pas passer de variable au template en faisant : return $this->render('user/index.html.twig', []);
+//    }
+
     /**
-     * @Route("/tuto1/phrase")
-     */
-    public function phraseAction()
-    {
-        return new Response(
-            '<html><body>Oui ?</body></html>'
-        );
-    }
-
-    // La route est accessible via (navigateur) /web/app_dev.php/tuto1/template
-    // Le template est ici : /app/Resources/views/tuto1/index.html.twig
-    /**
-     * @Route("/tuto1/template")
-     */
-    public function templateAction()
-    {
-
-        $phrase = "Je suis la phrase";
-
-        return $this->render('tuto1/index.html.twig', [
-            'phrase' => $phrase
-        ]);
-
-        // On peut ne pas passer de variable au template en faisant : return $this->render('tuto1/index.html.twig', []);
-    }
-
-    /**
-     * @Route("/tuto1/list")
+     * @Route("/users/list")
      */
     public function listAction(Request $request, PaginatorInterface $paginator)
     {
@@ -54,11 +59,33 @@ class Tuto1Controller extends Controller
             3 // nb element par page
         );
 
-        return $this->render('tuto1/list.html.twig', array('pagination' => $pagination));
+        return $this->render('user/pages/list.html.twig', array('pagination' => $pagination));
     }
 
     /**
-     * @Route("/tuto1/sendmail/{email}")
+     * @Route("/user/{id}")
+     */
+    public function userProfileAction(Request $r){
+
+        $userId = $r->get('id');
+
+//        $user =
+        $json = file_get_contents(
+            $this->generateUrl('api_user_by_id', ['id'=>$userId], UrlGeneratorInterface::ABSOLUTE_URL)
+        ); // Permet d'avoir l'url à atteindre à partir de la route correspondante
+
+        $user = json_decode($json);
+
+        return $this->render(
+            'user/pages/profile.html.twig',
+            [
+                'user' => $user,
+            ]);
+
+    }
+
+    /**
+     * @Route("/user/sendmail/{email}")
      */
     public function sendEmailAction(Request $r, \Swift_Mailer $mailer)
     {
@@ -75,7 +102,7 @@ class Tuto1Controller extends Controller
             ->setTo($email)
             ->setBody(
                 $this->renderView(
-                    'tuto1/email.html.twig',
+                    'user/email.html.twig',
                     ['email' => $email]
                 ),
                 'text/html'
@@ -84,7 +111,7 @@ class Tuto1Controller extends Controller
         $mailer->send($message);
 
         return $this->render(
-            'tuto1/email.html.twig',
+            'user/email.html.twig',
             ['email' => $email,]
         );
 
@@ -111,7 +138,10 @@ class Tuto1Controller extends Controller
 
     private function loadStudentsV2()
     {
-        $json = file_get_contents($this->generateUrl('api_users', [], UrlGeneratorInterface::ABSOLUTE_URL)); // Permet d'avoir l'url à atteindre à partir de la route correspondante
+        $json = file_get_contents(
+            $this->generateUrl('api_users', [], UrlGeneratorInterface::ABSOLUTE_URL)
+        ); // Permet d'avoir l'url à atteindre à partir de la route correspondante
+
         $arr = json_decode($json);
 
         return $arr;

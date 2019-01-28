@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ parent() }} / Utilisateurs{% endblock %}
+
+{% block body %}
+    {% include 'user/includes/header.html.twig' %}
+
+    <div id="body-wrapper">
+
+        {% include 'user/includes/menu.html.twig' %}
+
+        <div id="content">
+            {% block content %}
+            {% endblock %}
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('user.css', 'user_css') }}" />
+{% endblock %}
