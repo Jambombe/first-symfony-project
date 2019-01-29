@@ -8,7 +8,10 @@ class UserService
 
     public function moyenne($array){
 
-        return round(array_sum($array) / count($array));
+        if (count($array) > 0)
+            return round(array_sum($array) / count($array));
+        else
+            return null;
     }
 
     /**

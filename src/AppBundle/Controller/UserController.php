@@ -2,9 +2,14 @@
 // src/AppBundle/Controller/UserController.php
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\User;
 use AppBundle\Service\UserService;
 use Knp\Component\Pager\PaginatorInterface;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -47,13 +52,58 @@ class UserController extends Controller
 //    }
 
     /**
-     * @Route("/users/list")
+     * @Route("/user/new")
+     */
+    public function newAction(Request $request){
+
+        date_default_timezone_set('Europe/Paris');
+
+        $user= new User();
+        $user->setNom('Nom');
+        $user->setPrenom('Prénom');
+        $user->setBirthdate(new \DateTime());
+        $user->setEmail('moi@exemple.com');
+
+        $form = $this->createFormBuilder($user)
+            ->add('nom', TextType::class)
+            ->add('prenom', TextType::class)
+            ->add('birthdate', DateType::class, [ 'label' => 'Date de naissance'])
+            ->add('email', EmailType::class)
+            ->add('save', SubmitType::class, ['label' => "Créer l'utilisateur"])
+            ->getForm();
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()){
+            $user->setRegistrationDate(new \DateTime());
+
+            try {
+                $entityManager = $this->getDoctrine()->getManager();
+                $entityManager->persist($user);
+                $entityManager->flush();
+                $this->redirectToRoute('users_list');
+            } catch (\Exception $e) {
+
+            }
+        }
+
+        return $this->render('user/pages/inscription.html.twig',
+            [
+               'form'=> $form->createView(),
+            ]
+        );
+
+    }
+
+    /**
+     * @Route("/users/list", name="users_list")
      */
 //    public function listAction(Request $request, PaginatorInterface $paginator, UserService $userService)
     public function listAction(Request $request, PaginatorInterface $paginator)
     {
 //        $students = $this->loadStudents();
-        $students = $this->loadStudentsV2();
+//        $students = $this->loadStudentsV2();
+        $students = $this->loadStudentsV3();
 
         $userService = $this->get('user_service');
 
@@ -71,6 +121,7 @@ class UserController extends Controller
             [
                 'pagination' => $pagination,
                 'moyenne_age' => $userService->moyenne($userService->getColumn($students, 'age')),
+//                'moyenne_age' => $userService->moyenne(array_column($students, 'age')),
             ]
         );
     }
@@ -165,6 +216,12 @@ class UserController extends Controller
         $arr = json_decode($json);
 
         return $arr;
+    }
+
+    private function loadStudentsV3(){
+        $userRepo = $this->getDoctrine()->getRepository(User::class);
+
+        return $userRepo->findAll();
     }
 }
 

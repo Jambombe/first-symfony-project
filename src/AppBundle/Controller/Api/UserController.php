@@ -2,6 +2,7 @@
 // src/AppBundle/Controller/Api/UserController.php
 namespace AppBundle\Controller\Api;
 
+use AppBundle\Entity\User;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,14 +16,17 @@ class UserController extends Controller
     // La route est définie dans AppBundle\Resources\config\routing_api.yml
     public function getAllAction()
     {
-        return $this->json($this->users());
+        return $this->json($this->usersV2());
     }
 
 
     public function getByIdAction(Request $r)
     {
         $id = $r->get('id'); // On recupère le parametre 'id' (defini dans la route)
-        return $this->json($this->getById($id));
+
+        $user = $this->getByIdV2($id);
+        
+        return $this->json($user);
     }
 
     private function getById($id)
@@ -36,6 +40,12 @@ class UserController extends Controller
                 break;
             }
         }
+    }
+
+    private function getByIdV2($id){
+        $userRepo = $this->getDoctrine()->getRepository(User::class);
+
+        return $userRepo->find($id);
     }
 
     public function getByEmailAction(Request $r)
@@ -60,7 +70,7 @@ class UserController extends Controller
 
     private function getByEmail($email)
     {
-        $users = $this->users();
+        $users = $this->usersV2();
 
         foreach ($users as $user)
         {
@@ -93,6 +103,11 @@ class UserController extends Controller
         array_push($array, array('id'=> 11, 'nom'=>'k', 'prenom'=>'k', 'date_naissance'=>'01-01-1998', 'age'=> 11, 'email'=>'lucas.barneoudarnaud@gmail.com'));
 
         return $array;
+    }
+    private function usersV2(){
+        $userRepo = $this->getDoctrine()->getRepository(User::class);
+
+        return $userRepo->findAll();
     }
 
 }

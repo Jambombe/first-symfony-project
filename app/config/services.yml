@@ -34,6 +34,6 @@ services:
     #     arguments:
     #         $someArgument: 'some_value'
 
-    user_service: # alias du service (sert à faire $this->get('user_service')
+    user_service: # alias du service (sert à faire $this->get('user_service'))
         class: AppBundle\Service\UserService # Chemin du fichier de service
         public: true # Autorise $this->get à nous retourner le service

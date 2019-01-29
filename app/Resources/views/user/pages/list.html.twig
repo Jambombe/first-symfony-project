@@ -11,6 +11,7 @@
             <tr>
                 <th></th>
                 <th>Prénom</th>
+                <th>Nom</th>
                 <th>Âge</th>
                 <th>Email</th>
             </tr>
@@ -24,7 +25,8 @@
                         </a>
                     </td>
                     <td>{{ student.prenom }}</td>
-                    <td>{{ student.age }}</td>
+                    <td>{{ student.nom }}</td>
+                    <td>{# {{ student.age }} #}</td>
                     <td>
                         <a href="http://cdw.develop/app_dev.php/user/sendmail/{{ student.email }}" title="Envoyer un joli mail :)">
                             {{ student.email }}
