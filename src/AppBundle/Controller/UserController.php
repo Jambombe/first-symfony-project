@@ -2,7 +2,9 @@
 // src/AppBundle/Controller/UserController.php
 namespace AppBundle\Controller;
 
+use AppBundle\Service\UserService;
 use Knp\Component\Pager\PaginatorInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -47,10 +49,13 @@ class UserController extends Controller
     /**
      * @Route("/users/list")
      */
+//    public function listAction(Request $request, PaginatorInterface $paginator, UserService $userService)
     public function listAction(Request $request, PaginatorInterface $paginator)
     {
 //        $students = $this->loadStudents();
         $students = $this->loadStudentsV2();
+
+        $userService = $this->get('user_service');
 
 //        $paginator = $this->get('knp_paginator'); // Autre solution : dans la signature de la methode
         $pagination = $paginator->paginate(
@@ -59,7 +64,15 @@ class UserController extends Controller
             3 // nb element par page
         );
 
-        return $this->render('user/pages/list.html.twig', array('pagination' => $pagination));
+
+
+        return $this->render(
+            'user/pages/list.html.twig',
+            [
+                'pagination' => $pagination,
+                'moyenne_age' => $userService->moyenne($userService->getColumn($students, 'age')),
+            ]
+        );
     }
 
     /**
@@ -86,7 +99,7 @@ class UserController extends Controller
     /**
      * @Route("/user/sendmail/{email}")
      */
-    public function sendEmailAction(Request $r, \Swift_Mailer $mailer)
+    public function sendEmailAction(Request $r, \Swift_Mailer $mailer, LoggerInterface $logger)
     {
         $email = $r->get('email'); // On recupère le parametre 'email' (defini dans la route)
 
@@ -111,6 +124,8 @@ class UserController extends Controller
                 ),
                 'text/html'
             );
+
+        $logger->info($email);
 
         $isSend = $mailer->send($message);
 

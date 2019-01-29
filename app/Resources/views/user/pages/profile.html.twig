@@ -10,7 +10,8 @@
         <h2>{{ user.prenom|lower }} {{ user.nom | upper }}</h2>
         <ul>
             <li>
-                Date de naissance : {{ user.date_naissance | date('d/m/Y')}}
+                {#Date de naissance : {{ user.date_naissance | date('d/m/Y')}}#}
+                Date de naissance : {{ user.date_naissance | friendlydate }}
             </li>
             <li>
                 Age : {{ user.age }}
