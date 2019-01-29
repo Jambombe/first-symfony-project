@@ -69,12 +69,11 @@ class UserController extends Controller
 
         $userId = $r->get('id');
 
-//        $user =
-        $json = file_get_contents(
+        $json = @file_get_contents(
             $this->generateUrl('api_user_by_id', ['id'=>$userId], UrlGeneratorInterface::ABSOLUTE_URL)
         ); // Permet d'avoir l'url à atteindre à partir de la route correspondante
 
-        $user = json_decode($json);
+        $user = json_decode($json, true);
 
         return $this->render(
             'user/pages/profile.html.twig',
@@ -97,6 +96,11 @@ class UserController extends Controller
             $email = 'lucas.barneoudarnaud@gmail.com'; // adresse par defaut
         }
 
+        if(!$r->isXmlHttpRequest()) {
+
+            return $this->json(array('status' => 'error'), Response::HTTP_FORBIDDEN);
+        }
+
         $message = (new \Swift_Message('mail test'))
             ->setFrom('cdw2k18@gmail.com')
             ->setTo($email)
@@ -108,11 +112,12 @@ class UserController extends Controller
                 'text/html'
             );
 
-        $mailer->send($message);
+        $isSend = $mailer->send($message);
 
-        return $this->render(
-            'user/pages/email.html.twig',
-            ['email' => $email,]
+        return $this->json(
+            [
+                'status'=>'ok',
+            ]
         );
 
     }

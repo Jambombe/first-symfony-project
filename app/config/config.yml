@@ -31,6 +31,8 @@ framework:
         packages:
             user_css:
                 base_path: '/css/user'
+            user_js:
+                base_path: 'js/user'
     php_errors:
         log: true
 

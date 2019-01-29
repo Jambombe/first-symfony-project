@@ -16,12 +16,17 @@
                 Age : {{ user.age }}
             </li>
             <li>
-                <a href="http://cdw.develop/app_dev.php/user/sendmail/{{ user.email }}" title="Envoyer un joli mail :)">
+                <button data-spam-url="http://cdw.develop/app_dev.php/user/sendmail/{{ user.email }}" id="sendMailBtn" title="Envoyer un joli mail :)">
                     {{ user.email }}
-                </a>
-                <button>Spammer</button>
+                </button>
             </li>
         </ul>
     </div>
 </div>
+{% endblock %}
+
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('mail.js', 'user_js') }}"></script>
 {% endblock %}
