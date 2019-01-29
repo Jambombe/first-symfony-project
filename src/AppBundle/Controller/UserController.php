@@ -81,9 +81,9 @@ class UserController extends Controller
                 $entityManager = $this->getDoctrine()->getManager();
                 $entityManager->persist($user);
                 $entityManager->flush();
-                $this->redirectToRoute('users_list');
+                echo '<script>setTimeout(function(){ swal("Utilisateur créé avec succès !" ,"", "success"); }, 500);</script>';
             } catch (\Exception $e) {
-
+                echo '<script>setTimeout(function(){ swal("Une erreur est survenue lors de l\'envoi :/" ,"", "error"); }, 500);</script>';
             }
         }
 

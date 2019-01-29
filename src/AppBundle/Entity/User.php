@@ -45,7 +45,7 @@ class User
     /**
      * @var string
      *
-     * @ORM\Column(name="email", type="string", length=127)
+     * @ORM\Column(name="email", type="string", length=127, unique=true)
      */
     private $email;
 
@@ -185,6 +185,11 @@ class User
     public function getRegistrationDate()
     {
         return $this->registrationDate;
+    }
+
+    public function getAge()
+    {
+        return 99;
     }
 }
 

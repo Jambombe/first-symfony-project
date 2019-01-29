@@ -11,7 +11,7 @@ class UserService
         if (count($array) > 0)
             return round(array_sum($array) / count($array));
         else
-            return null;
+            return '-';
     }
 
     /**
@@ -23,13 +23,17 @@ class UserService
     public function getColumn($array, $columnName){
         $newArray = array();
 
-        if ($array[0] instanceof \stdClass){
-            foreach ($array as $item){
-                array_push($newArray, $item->$columnName);
-            }
-        } elseif (gettype($array[0]) == 'array') {
-            foreach ($array as $item){
-                array_push($newArray, $item[$columnName]);
+//        var_dump($array);
+
+        if (! empty($array)) {
+            if ($array[0] instanceof \stdClass) {
+                foreach ($array as $item) {
+                    array_push($newArray, $item->$columnName);
+                }
+            } elseif (gettype($array[0]) == 'array') {
+                foreach ($array as $item) {
+                    array_push($newArray, $item[$columnName]);
+                }
             }
         }
 

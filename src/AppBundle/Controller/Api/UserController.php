@@ -25,7 +25,7 @@ class UserController extends Controller
         $id = $r->get('id'); // On recupère le parametre 'id' (defini dans la route)
 
         $user = $this->getByIdV2($id);
-        
+
         return $this->json($user);
     }
 
