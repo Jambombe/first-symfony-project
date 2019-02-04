@@ -5,28 +5,29 @@ namespace AppBundle\Controller\Api;
 use AppBundle\Entity\User;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Serializer\SerializerInterface;
 
 
 class UserController extends Controller
 {
 
     // La route est définie dans AppBundle\Resources\config\routing_api.yml
-    public function getAllAction()
+    public function getAllAction(SerializerInterface $serializer)
     {
-        return $this->json($this->usersV2());
+        $users = $this->usersV2();
+//        dump(serialize($users));
+
+//        return $this->json($users);
+        return JsonResponse::fromJsonString($serializer->serialize($users, 'json'), JsonResponse::HTTP_OK);
     }
 
 
-    public function getByIdAction(Request $r)
+//    public function getByIdAction(Request $r)
+    public function getByIdAction(User $user, SerializerInterface $serializer)
     {
-        $id = $r->get('id'); // On recupère le parametre 'id' (defini dans la route)
 
-        $user = $this->getByIdV2($id);
-
-        return $this->json($user);
+        return $this->json($this->userToJson($user));
     }
 
     private function getById($id)
@@ -40,12 +41,26 @@ class UserController extends Controller
                 break;
             }
         }
+
+        return null;
     }
 
     private function getByIdV2($id){
-        $userRepo = $this->getDoctrine()->getRepository(User::class);
 
-        return $userRepo->find($id);
+        $userRepo = $this->getDoctrine()->getRepository(User::class);
+        $user = $userRepo->find($id);
+
+//        return $user;
+
+        return
+            array(
+                'id'=>$user->getId(),
+                'prenom'=>$user->getPrenom(),
+                'nom'=>$user->getNom(),
+                'birthdate'=>$user->getBirthdate(),
+                'email'=>$user->getEmail(),
+                'registration_date'=>$user->getRegistrationDate(),
+            );
     }
 
     public function getByEmailAction(Request $r)
@@ -65,7 +80,6 @@ class UserController extends Controller
         } else {
             return $this->jsonNotFound();
         }
-        return false;
     }
 
     private function getByEmail($email)
@@ -108,6 +122,19 @@ class UserController extends Controller
         $userRepo = $this->getDoctrine()->getRepository(User::class);
 
         return $userRepo->findAll();
+    }
+
+    private function userToJson(User $user)
+    {
+        return array(
+            'id'=>$user->getId(),
+            'prenom'=>$user->getPrenom(),
+            'nom'=>$user->getNom(),
+            'birthdate'=>$user->getBirthdate(),
+            'email'=>$user->getEmail(),
+            'registrationDate'=>$user->getRegistrationDate(),
+            'urlImage'=>$user->getUrlImage(),
+        );
     }
 
 }

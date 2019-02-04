@@ -7,17 +7,18 @@
 {% block content %}
 <div id="wrapper">
     <div id="container">
-        <h2>{{ user.prenom|lower }} {{ user.nom | upper }}</h2>
+        <img src="{{ user.urlImage }}" width="50px"/>
+        <h2>{{ user.prenom | lower }} {{ user.nom | upper }}</h2>
         <ul>
             <li>
-                {#Date de naissance : {{ user.date_naissance | date('d/m/Y')}}#}
-                Date de naissance : {{ user.date_naissance | friendlydate }}
+                {#Date de naissance : {{ user.birthdate | date('d/m/Y')}}#}
+                Date de naissance : {{ user.birthdate | friendlydate }} {# Filtre custom créé dans AppBundle\Twig\FriendlyDateExtension #}
             </li>
             <li>
-                Age : {{ user.age }}
+                Age : {{ user.age }} {# Twig va automatiquement aller chercher User#getAge() #}
             </li>
             <li>
-                <button data-spam-url="http://cdw.develop/app_dev.php/user/sendmail/{{ user.email }}" id="sendMailBtn" title="Envoyer un joli mail :)">
+                <button data-spam-url="{{ path('user_send_email', {'email': user.email}) }}" id="sendMailBtn" title="Envoyer un joli mail :)">
                     {{ user.email }}
                 </button>
             </li>

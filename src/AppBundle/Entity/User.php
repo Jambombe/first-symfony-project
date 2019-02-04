@@ -56,6 +56,13 @@ class User
      */
     private $registrationDate;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="url_image", type="string", length=1023)
+     */
+    private $urlImage;
+
 
     /**
      * Get id
@@ -187,9 +194,35 @@ class User
         return $this->registrationDate;
     }
 
+    /**
+     * Set ulrImage
+     *
+     * @param string $urlImage
+     *
+     * @return User
+     */
+    public function setUrlImage($urlImage)
+    {
+        $this->urlImage = $urlImage;
+
+        return $this;
+    }
+
+    /**
+     * Get urlImage
+     *
+     * @return string
+     */
+    public function getUrlImage()
+    {
+        return $this->urlImage;
+    }
+
     public function getAge()
     {
-        return 99;
+        $now = new \DateTime();
+        $diff = $now->diff($this->getBirthdate());
+        return $diff->y;
     }
 }
 

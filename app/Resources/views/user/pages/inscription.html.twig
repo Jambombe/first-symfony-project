@@ -5,12 +5,19 @@
 {% endblock %}
 
 {% block content %}
+
 <div id="wrapper">
     <div id="container">
 
     {{ form_start(form) }}
     {{ form_widget(form) }}
     {{ form_end(form) }}
+
+        {% for message in app.flashes('notice') %}
+            <div class="flash-notice">
+                {{ message }}
+            </div>
+        {% endfor %}
 
     </div>
 </div>

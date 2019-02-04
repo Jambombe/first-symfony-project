@@ -10,6 +10,7 @@ use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -53,35 +54,41 @@ class UserController extends Controller
 
     /**
      * @Route("/user/new")
+     * @param Request $request
+     * @return Response
+     * @throws \Exception
      */
     public function newAction(Request $request){
 
         date_default_timezone_set('Europe/Paris');
 
         $user= new User();
-        $user->setNom('Nom');
-        $user->setPrenom('Prénom');
+//        $user->setNom('');
+//        $user->setPrenom('');
         $user->setBirthdate(new \DateTime());
-        $user->setEmail('moi@exemple.com');
+//        $user->setEmail('');
 
         $form = $this->createFormBuilder($user)
-            ->add('nom', TextType::class)
-            ->add('prenom', TextType::class)
+            ->add('nom', TextType::class, [ 'attr'=>['placeholder' => 'Nom']])
+            ->add('prenom', TextType::class, [ 'attr'=>['placeholder' => 'Prénom']])
             ->add('birthdate', DateType::class, [ 'label' => 'Date de naissance'])
-            ->add('email', EmailType::class)
+            ->add('email', EmailType::class, [ 'attr'=>['placeholder' => 'Adresse email']])
+            ->add('url_image', TextType::class, [ 'label' => 'Image (URL)', 'attr'=>['placeholder' => 'Lien image']])
             ->add('save', SubmitType::class, ['label' => "Créer l'utilisateur"])
             ->getForm();
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()){
+
             $user->setRegistrationDate(new \DateTime());
 
             try {
                 $entityManager = $this->getDoctrine()->getManager();
                 $entityManager->persist($user);
                 $entityManager->flush();
-                echo '<script>setTimeout(function(){ swal("Utilisateur créé avec succès !" ,"", "success"); }, 500);</script>';
+                $this->addFlash('notice', "C'est enregistré !");
+//                echo '<script>setTimeout(function(){ swal("Utilisateur créé avec succès !" ,"", "success"); }, 500);</script>';
             } catch (\Exception $e) {
                 echo '<script>setTimeout(function(){ swal("Une erreur est survenue lors de l\'envoi :/" ,"", "error"); }, 500);</script>';
             }
@@ -97,6 +104,9 @@ class UserController extends Controller
 
     /**
      * @Route("/users/list", name="users_list")
+     * @param Request $request
+     * @param PaginatorInterface $paginator
+     * @return Response
      */
 //    public function listAction(Request $request, PaginatorInterface $paginator, UserService $userService)
     public function listAction(Request $request, PaginatorInterface $paginator)
@@ -105,6 +115,7 @@ class UserController extends Controller
 //        $students = $this->loadStudentsV2();
         $students = $this->loadStudentsV3();
 
+        /* @var UserService */
         $userService = $this->get('user_service');
 
 //        $paginator = $this->get('knp_paginator'); // Autre solution : dans la signature de la methode
@@ -114,41 +125,70 @@ class UserController extends Controller
             3 // nb element par page
         );
 
-
+        $allAges = [];
+        foreach ($students as $s){
+            array_push($allAges, $s->getAge());
+        }
 
         return $this->render(
             'user/pages/list.html.twig',
             [
                 'pagination' => $pagination,
-                'moyenne_age' => $userService->moyenne($userService->getColumn($students, 'age')),
+                'moyenne_age' => $userService->moyenne($allAges),
+//                'moyenne_age' => $userService->moyenne($userService->getColumn($students, 'age')),
 //                'moyenne_age' => $userService->moyenne(array_column($students, 'age')),
             ]
         );
     }
 
     /**
-     * @Route("/user/{id}")
+     * @Route("/user/{id}", name="user_profile")
+     * @param User $user
+     * @return Response
      */
-    public function userProfileAction(Request $r){
+//    public function userProfileAction($id)
+    public function userProfileAction(User $user)
+    {
+        // Mettre User au lieu de id dans la signature de la methode
+        // indique à Symfony que 'id' de la route est celui de la classe User
+        // De cette façon, l'objet User $user est déjà initialisé (ou null si aucun user d'id 'id' n'existe)
 
-        $userId = $r->get('id');
+//        $userId = $r->get('id');
 
-        $json = @file_get_contents(
-            $this->generateUrl('api_user_by_id', ['id'=>$userId], UrlGeneratorInterface::ABSOLUTE_URL)
-        ); // Permet d'avoir l'url à atteindre à partir de la route correspondante
+//        $json = @file_get_contents(
+//            $this->generateUrl('api_user_by_id', ['id'=>$userId], UrlGeneratorInterface::ABSOLUTE_URL)
+//        ); // Permet d'avoir l'url à atteindre à partir de la route correspondante
+//
+//        $user = json_decode($json, true);
 
-        $user = json_decode($json, true);
 
-        return $this->render(
-            'user/pages/profile.html.twig',
-            [
-                'user' => $user,
-            ]);
+
+//        $user = $this->getDoctrine()->getRepository(User::class)->find($id);
+
+        dump('Oui');
+
+        if ($user) {
+
+            return $this->render(
+                'user/pages/profile.html.twig',
+                [
+                    'user' => $user,
+                ]);
+        } else {
+            return $this->render(
+                'user/pages/profileNotFound.html.twig',
+                []
+            );
+        }
 
     }
 
     /**
-     * @Route("/user/sendmail/{email}")
+     * @Route("/user/sendmail/{email}", name="user_send_email")
+     * @param Request $r
+     * @param \Swift_Mailer $mailer
+     * @param LoggerInterface $logger
+     * @return JsonResponse
      */
     public function sendEmailAction(Request $r, \Swift_Mailer $mailer, LoggerInterface $logger)
     {
@@ -218,6 +258,9 @@ class UserController extends Controller
         return $arr;
     }
 
+    /**
+     * @return array
+     */
     private function loadStudentsV3(){
         $userRepo = $this->getDoctrine()->getRepository(User::class);
 
