@@ -7,7 +7,7 @@
 {% block content %}
 <div id="wrapper">
     <div id="container">
-        <img src="{{ user.urlImage }}" width="50px"/>
+        <img src="{{ user.img }}" width="50px"/>
         <h2>{{ user.prenom | lower }} {{ user.nom | upper }}</h2>
         <ul>
             <li>
@@ -23,6 +23,30 @@
                 </button>
             </li>
         </ul>
+        <div class="user_images">
+            <h3>Images</h3>
+            {% if user.profileImages | length > 0 %}
+                {% for img in user.profileImages %}
+                    <img src="{{ img.url }}" width="50px"/>
+                {% endfor %}
+            {% else %}
+                Aucune image
+            {% endif %}
+
+        </div>
+        <div class="user_groups">
+            <h3>Groupes</h3>
+
+            {% if user.groups | length > 0 %}
+            <ul>
+                {% for group in user.groups %}
+                    <li>{{ group.name }}</li>
+                {% endfor %}
+            </ul>
+            {% else %}
+                Cet utilisateur n'appartient à aucun groupe
+            {% endif %}
+        </div>
     </div>
 </div>
 {% endblock %}

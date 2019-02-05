@@ -2,6 +2,8 @@
 
 namespace AppBundle\Repository;
 
+use AppBundle\Entity\User;
+
 /**
  * UserRepository
  *
@@ -13,7 +15,7 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
 
     public function getAllUsers(){
 
-        $userRepo = $this->getDoctrine()->getRepository(User::class);
+        $userRepo = $this->getEntityManager()->getRepository(User::class);
 
         return $userRepo->findAll();
     }

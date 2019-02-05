@@ -1,7 +1,6 @@
 $('#sendMailBtn').click(function(){
 
     var spamUrl = $(this).data('spam-url');
-    console.log(spamUrl);
 
    $.ajax({
        url: spamUrl,

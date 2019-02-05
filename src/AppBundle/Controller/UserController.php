@@ -2,8 +2,10 @@
 // src/AppBundle/Controller/UserController.php
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\ProfileImage;
 use AppBundle\Entity\User;
 use AppBundle\Service\UserService;
+use Doctrine\ORM\EntityManager;
 use Knp\Component\Pager\PaginatorInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -73,7 +75,7 @@ class UserController extends Controller
             ->add('prenom', TextType::class, [ 'attr'=>['placeholder' => 'Prénom']])
             ->add('birthdate', DateType::class, [ 'label' => 'Date de naissance'])
             ->add('email', EmailType::class, [ 'attr'=>['placeholder' => 'Adresse email']])
-            ->add('url_image', TextType::class, [ 'label' => 'Image (URL)', 'attr'=>['placeholder' => 'Lien image']])
+            ->add('url_image', TextType::class, [ 'label' => 'Image (URL)', 'attr'=>['placeholder' => 'Lien image'], "mapped"=>false])
             ->add('save', SubmitType::class, ['label' => "Créer l'utilisateur"])
             ->getForm();
 
@@ -82,6 +84,17 @@ class UserController extends Controller
         if ($form->isSubmitted() && $form->isValid()){
 
             $user->setRegistrationDate(new \DateTime());
+
+            $urlImage = $form['url_image']->getData();
+
+            if ($urlImage)
+            {
+                $img = new ProfileImage();
+                $img->setUrl($urlImage)
+                    ->setUser($user);
+
+                $user->addProfileImage($img);
+            }
 
             try {
                 $entityManager = $this->getDoctrine()->getManager();
@@ -147,7 +160,7 @@ class UserController extends Controller
      * @return Response
      */
 //    public function userProfileAction($id)
-    public function userProfileAction(User $user)
+    public function userProfileAction(User $user = null) // = null pour mettre valeur par defaut
     {
         // Mettre User au lieu de id dans la signature de la methode
         // indique à Symfony que 'id' de la route est celui de la classe User
@@ -162,10 +175,7 @@ class UserController extends Controller
 //        $user = json_decode($json, true);
 
 
-
 //        $user = $this->getDoctrine()->getRepository(User::class)->find($id);
-
-        dump('Oui');
 
         if ($user) {
 
