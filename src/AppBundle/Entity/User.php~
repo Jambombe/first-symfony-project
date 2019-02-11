@@ -60,13 +60,14 @@ class User
     private $registrationDate;
 
     /**
-     * @ORM\OneToMany(targetEntity="ProfileImage", mappedBy="user")
-     * @ORM\OrderBy({"id"="DESC"})
+     * @ORM\OneToMany(targetEntity="ProfileImage", mappedBy="user", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(onDelete="CASCADE")
+     * @ORM\OrderBy({"id"="ASC"})
      */
     private $profileImages;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Groupe", inversedBy="users")
+     * @ORM\ManyToMany(targetEntity="Groupe", inversedBy="users", cascade={"persist", "remove"})
      */
     private $groups;
 
@@ -277,5 +278,39 @@ class User
         } else {
             return 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Circle-icons-profile.svg/1024px-Circle-icons-profile.svg.png';
         }
+    }
+
+    /**
+     * Add group
+     *
+     * @param \AppBundle\Entity\Groupe $group
+     *
+     * @return User
+     */
+    public function addGroup(\AppBundle\Entity\Groupe $group)
+    {
+        $this->groups[] = $group;
+
+        return $this;
+    }
+
+    /**
+     * Remove group
+     *
+     * @param \AppBundle\Entity\Groupe $group
+     */
+    public function removeGroup(\AppBundle\Entity\Groupe $group)
+    {
+        $this->groups->removeElement($group);
+    }
+
+    /**
+     * Get groups
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getGroups()
+    {
+        return $this->groups;
     }
 }

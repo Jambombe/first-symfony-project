@@ -30,8 +30,8 @@ class ProfileImage
 
     /**
      * @var string
-     *
-     * @ORM\ManyToOne(targetEntity="User", inversedBy="profileImages");
+     * @ORM\ManyToOne(targetEntity="User", inversedBy="profileImages")
+     * @ORM\JoinColumn(onDelete="CASCADE")
      */
     private $user;
 

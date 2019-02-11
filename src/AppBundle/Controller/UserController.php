@@ -6,6 +6,7 @@ use AppBundle\Entity\ProfileImage;
 use AppBundle\Entity\User;
 use AppBundle\Service\UserService;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -119,14 +120,36 @@ class UserController extends Controller
      * @Route("/users/list", name="users_list")
      * @param Request $request
      * @param PaginatorInterface $paginator
+     * @param EntityManagerInterface $em
      * @return Response
+     * @throws \Exception
      */
 //    public function listAction(Request $request, PaginatorInterface $paginator, UserService $userService)
-    public function listAction(Request $request, PaginatorInterface $paginator)
+    public function listAction(Request $request, PaginatorInterface $paginator, EntityManagerInterface $em)
     {
-//        $students = $this->loadStudents();
-//        $students = $this->loadStudentsV2();
-        $students = $this->loadStudentsV3();
+        $minDate = $request->query->get('minDate');
+        $maxDate = $request->query->get('maxDate');
+
+        if ($minDate && $maxDate)
+        {
+
+            $minDate = (new \DateTime($minDate));
+            $maxDate = (new \DateTime($maxDate));
+            dump($minDate, $maxDate);
+
+//            $students = $em
+//                ->createQuery("SELECT u FROM AppBundle:User u WHERE u.registrationDate >= :minDate AND u.registrationDate <= :maxDate")
+//                ->setParameters(array('minDate'=>$minDate, 'maxDate'=>$maxDate))
+//                ->getResult();
+            //////////////////////////////////
+            $students = $em->getRepository(User::class)->findByCreationDates($minDate, $maxDate);
+        } else {
+//          $students = $this->loadStudents();
+//          $students = $this->loadStudentsV2();
+            $students = $this->loadStudentsV3();
+        }
+
+        dump($students);
 
         /* @var UserService */
         $userService = $this->get('user_service');
@@ -236,6 +259,36 @@ class UserController extends Controller
             ]
         );
 
+    }
+
+    /**
+     * @Route("/users/delete-minors", name="delete-minors")
+     */
+    public function deleteMinorsAction(EntityManagerInterface $em)
+    {
+        $userRepo = $em->getRepository(User::class);
+
+        $rep = $userRepo->deleteMinors();
+
+        dump($rep);
+
+        return new Response();
+    }
+
+    /**
+     * @Route("/group/{groupName}/users")
+     */
+    public function usersInGroup($groupName, EntityManagerInterface $em)
+    {
+        $users = $em->getRepository(User::class)->getUsersInGroup($groupName);
+
+        return $this->render(
+            'user/pages/users-in-group.html.twig',
+            [
+                'users'=>$users,
+                'groupName'=>$groupName,
+            ]
+        );
     }
 
     private function loadStudents()

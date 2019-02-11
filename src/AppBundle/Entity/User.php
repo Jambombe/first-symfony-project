@@ -47,19 +47,18 @@ class User
 
     /**
      * @var string
-     *
      * @ORM\Column(name="email", type="string", length=127, unique=true)
      */
     private $email;
 
     /**
      * @var \DateTime
-     *
      * @ORM\Column(name="registration_date", type="datetime")
      */
     private $registrationDate;
 
     /**
+     * @var \Doctrine\Common\Collections\ArrayCollection
      * @ORM\OneToMany(targetEntity="ProfileImage", mappedBy="user", cascade={"persist", "remove"})
      * @ORM\OrderBy({"id"="DESC"})
      */

@@ -31,7 +31,7 @@ class ProfileImage
     /**
      * @var string
      *
-     * @ORM\ManyToOne(targetEntity="User", inversedBy="profileImages");
+     * @ORM\ManyToOne(targetEntity="User", inversedBy="profileImages")
      */
     private $user;
 
@@ -94,4 +94,3 @@ class ProfileImage
         return $this->user;
     }
 }
-

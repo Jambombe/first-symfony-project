@@ -1,0 +1,49 @@
+{% extends 'user/layout.html.twig' %}
+
+{% block title %}
+    {{ parent() }} - Groupe
+{% endblock %}
+
+{% block content %}
+    <div id="wrapper">
+        <div id="container">
+            {% if users | length <= 0 %}
+                <h2>Aucun utilisateur dans le groupe <i>{{ groupName }}</i></h2>
+            {% else %}
+                <h2>Utilisateurs du groupe <i>{{ groupName }}</i></h2>
+
+                <table>
+                    <tr>
+                        <th></th>
+                        <th>Prénom</th>
+                        <th>Nom</th>
+                        <th>Âge</th>
+                        <th>Email</th>
+                    </tr>
+
+                    {% for u in users %}
+
+                        <tr>
+                            <td>
+                                <a href="http://cdw.develop/user/{{ u.id }}" title="Voir profil">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                            </td>
+                            <td>{{ u.prenom }}</td>
+                            <td>{{ u.nom }}</td>
+                            <td>{{ u.age }}</td>
+                            <td>
+                                <a href="http://cdw.develop/app_dev.php/user/sendmail/{{ u.email }}" title="Envoyer un joli mail :)">
+                                    {{ u.email }}
+                                </a>
+                            </td>
+                        </tr>
+
+                    {% endfor %}
+
+                </table>
+            {% endif %}
+
+        </div>
+    </div>
+{% endblock %}
