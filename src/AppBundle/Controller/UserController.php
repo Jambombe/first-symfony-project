@@ -3,7 +3,9 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\ProfileImage;
+use AppBundle\Form\ProfileImageType;
 use AppBundle\Entity\User;
+use AppBundle\Form\UserType;
 use AppBundle\Service\UserService;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
@@ -71,14 +73,22 @@ class UserController extends Controller
         $user->setBirthdate(new \DateTime());
 //        $user->setEmail('');
 
-        $form = $this->createFormBuilder($user)
-            ->add('nom', TextType::class, [ 'attr'=>['placeholder' => 'Nom']])
-            ->add('prenom', TextType::class, [ 'attr'=>['placeholder' => 'Prénom']])
-            ->add('birthdate', DateType::class, [ 'label' => 'Date de naissance'])
-            ->add('email', EmailType::class, [ 'attr'=>['placeholder' => 'Adresse email']])
-            ->add('url_image', TextType::class, [ 'label' => 'Image (URL)', 'attr'=>['placeholder' => 'Lien image'], "mapped"=>false])
-            ->add('save', SubmitType::class, ['label' => "Créer l'utilisateur"])
-            ->getForm();
+        $newProfileImage = new ProfileImage();
+
+        $form = $this->createForm(ProfileImageType::class, $newProfileImage);
+        $form
+//            ->add('url_image', TextType::class, [ 'label' => 'Image (URL)', 'attr'=>['placeholder' => 'Lien image'], "mapped"=>false])
+            ->add('submit', SubmitType::class)
+        ;
+
+//        $form = $this->createFormBuilder($user)
+//            ->add('nom', TextType::class, [ 'attr'=>['placeholder' => 'Nom']])
+//            ->add('prenom', TextType::class, [ 'attr'=>['placeholder' => 'Prénom']])
+//            ->add('birthdate', DateType::class, [ 'label' => 'Date de naissance'])
+//            ->add('email', EmailType::class, [ 'attr'=>['placeholder' => 'Adresse email']])
+//            ->add('url_image', TextType::class, [ 'label' => 'Image (URL)', 'attr'=>['placeholder' => 'Lien image'], "mapped"=>false])
+//            ->add('save', SubmitType::class, ['label' => "Créer l'utilisateur"])
+//            ->getForm();
 
         $form->handleRequest($request);
 
@@ -86,24 +96,26 @@ class UserController extends Controller
 
             $user->setRegistrationDate(new \DateTime());
 
-            $urlImage = $form['url_image']->getData();
+//            $urlImage = $form['url_image']->getData();
 
-            if ($urlImage)
-            {
-                $img = new ProfileImage();
-                $img->setUrl($urlImage)
-                    ->setUser($user);
-
-                $user->addProfileImage($img);
-            }
+//            if ($urlImage)
+//            {
+//                $img = new ProfileImage();
+//                $img->setUrl($urlImage)
+//                    ->setUser($user);
+//
+//                $user->addProfileImage($img);
+//            }
 
             try {
                 $entityManager = $this->getDoctrine()->getManager();
-                $entityManager->persist($user);
+                $entityManager->persist($newProfileImage);
+//                $entityManager->persist($user);
                 $entityManager->flush();
                 $this->addFlash('notice', "C'est enregistré !");
 //                echo '<script>setTimeout(function(){ swal("Utilisateur créé avec succès !" ,"", "success"); }, 500);</script>';
             } catch (\Exception $e) {
+                dump($e->getMessage());
                 echo '<script>setTimeout(function(){ swal("Une erreur est survenue lors de l\'envoi :/" ,"", "error"); }, 500);</script>';
             }
         }
@@ -132,7 +144,6 @@ class UserController extends Controller
 
         if ($minDate && $maxDate)
         {
-
             $minDate = (new \DateTime($minDate));
             $maxDate = (new \DateTime($maxDate));
             dump($minDate, $maxDate);
@@ -149,8 +160,6 @@ class UserController extends Controller
             $students = $this->loadStudentsV3();
         }
 
-        dump($students);
-
         /* @var UserService */
         $userService = $this->get('user_service');
 
@@ -158,7 +167,7 @@ class UserController extends Controller
         $pagination = $paginator->paginate(
             $students, // donnees
             $request->query->getInt('page', 1), // num page lors du chargement
-            3 // nb element par page
+            10 // nb element par page
         );
 
         $allAges = [];
@@ -283,12 +292,22 @@ class UserController extends Controller
         $users = $em->getRepository(User::class)->getUsersInGroup($groupName);
 
         return $this->render(
-            'user/pages/users-in-group.html.twig',
+            'group/pages/users-in-group.html.twig',
             [
                 'users'=>$users,
                 'groupName'=>$groupName,
             ]
         );
+    }
+
+    /**
+     * @Route("users/less-than-two-images")
+     */
+    public function lessThanTwoPictures(EntityManagerInterface $em)
+    {
+        $users = $em->getRepository(User::class)->lessThanNbPictures(2);
+
+        dump($users);
     }
 
     private function loadStudents()

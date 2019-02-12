@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ parent() }} / Utilisateurs{% endblock %}
+
+{% block body %}
+    {% include 'group/includes/header.html.twig' %}
+
+    <div id="body-wrapper">
+
+        {% include 'group/includes/menu.html.twig' %}
+
+        <div id="content">
+            {% block content %}
+            {% endblock %}
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('user.css', 'user_css') }}" />
+{% endblock %}
+
+{% block javascripts %}
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+{% endblock %}

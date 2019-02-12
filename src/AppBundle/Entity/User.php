@@ -6,12 +6,19 @@ use AppBundle\Repository\UserRepository;
 use Doctrine\Common\Persistence\ObjectRepository;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+
 
 /**
  * User
  *
  * @ORM\Table(name="user")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\UserRepository")
+ * @UniqueEntity(
+ *     fields={"email"},
+ *     message = "Cette adresse e-mail est déjà utilisée"
+ * )
  */
 class User
 {
@@ -28,6 +35,12 @@ class User
      * @var string
      *
      * @ORM\Column(name="prenom", type="string", length=63)
+     * @Assert\Length(
+     *      min = 2,
+     *      max = 30,
+     *      minMessage = "Le prénom doit être de minimum {{ limit }} caractères.",
+     *      maxMessage = "Le prénom ne peut pas dépasser {{ limit }} caractères."
+     * )
      */
     private $prenom;
 
@@ -35,6 +48,12 @@ class User
      * @var string
      *
      * @ORM\Column(name="nom", type="string", length=127)
+     * @Assert\Length(
+     *      min = 2,
+     *      max = 30,
+     *      minMessage = "Le nom doit être de minimum {{ limit }} caractères.",
+     *      maxMessage = "Le nom ne peut pas dépasser {{ limit }} caractères."
+     * )
      */
     private $nom;
 
@@ -42,18 +61,26 @@ class User
      * @var \DateTime
      *
      * @ORM\Column(name="birthdate", type="datetime")
+     * @Assert\DateTime(
+     *     message = "Cette date n'est pas valide",
+     * )
      */
     private $birthdate;
 
     /**
      * @var string
      * @ORM\Column(name="email", type="string", length=127, unique=true)
+     * @Assert\Email(
+     *     message = "L'adresse e-mail {{ value }} n'est pas valide.",
+     *     checkMX = true
+     * )
      */
     private $email;
 
     /**
      * @var \DateTime
      * @ORM\Column(name="registration_date", type="datetime")
+     * @Assert\DateTime
      */
     private $registrationDate;
 
@@ -75,6 +102,7 @@ class User
     public function __construct()
     {
         $this->profileImages = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->setRegistrationDate(new \DateTime());
     }
 
     /**

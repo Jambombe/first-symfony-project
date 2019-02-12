@@ -93,10 +93,38 @@ class UserRepository extends EntityRepository
      */
     public function getUsersInGroup($groupName)
     {
-        $qb = $this->getEntityManager();
+//        $qb = $this->getEntityManager();
+//        $users = $qb
+//            ->createQuery("SELECT u FROM AppBundle:User u JOIN u.groups ug WHERE ug.name = :groupName")
+//            ->setParameter('groupName', $groupName)
+//            ->getResult();
+
+        $qb = $this->createQueryBuilder('u');
         $users = $qb
-            ->createQuery("SELECT u FROM AppBundle:User u JOIN u.groups ug WHERE ug.name = :groupName")
-            ->setParameter('groupName', $groupName)->getResult();
+            ->join('u.groupes', 'g')
+            ->where($qb->expr()->eq('g.name', ':groupName'))
+            ->setParameter('groupName', $groupName)
+            ->getQuery()
+            ->getResult();
+
+        return $users;
+    }
+
+    /**
+     * Return un tableau de User possedant $nbPic images de profil ou moins
+     * @param $nbPic
+     * @return array
+     */
+    public function lessThanNbPictures($nbPic)
+    {
+        $qb = $this->createQueryBuilder('u');
+        $users = $qb
+            ->leftJoin("u.profileImages", 'pi')
+            ->groupBy('u')
+            ->having($qb->expr()->lt($qb->expr()->count('pi'), ':nbPic'))
+            ->setParameter('nbPic', $nbPic)
+            ->getQuery()
+            ->getResult();
 
         return $users;
     }
