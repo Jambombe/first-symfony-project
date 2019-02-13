@@ -1,11 +1,30 @@
 # To get started with security, check out the documentation:
 # https://symfony.com/doc/current/security.html
 security:
+    encoders:
+#        Symfony\Component\Security\Core\User\User: plaintext
+        AppBundle\Entity\User:
+            algorithm: bcrypt
+            cost: 10
+    role_hierarchy:
+        ROLE_ADMIN: [ROLE_USER]
+
 
     # https://symfony.com/doc/current/security.html#b-configuring-how-users-are-loaded
     providers:
-        in_memory:
-            memory: ~
+        our_db_provider:
+            entity:
+                class: AppBundle:User
+                property: email
+#        in_memory:
+#            memory:
+#                users:
+#                    utilisateur_lambda:
+#                        password: user
+#                        roles: 'ROLE_USER'
+#                    utilisateur_admin:
+#                        password: admin
+#                        roles: 'ROLE_ADMIN'
 
     firewalls:
         # disables authentication for assets and the profiler, adapt it according to your needs
@@ -15,6 +34,24 @@ security:
 
         main:
             anonymous: ~
+            # activate different ways to authenticate
+            # https://symfony.com/doc/current/security.html#a-configuring-how-your-users-will-authenticate
+            http_basic:
+                provider: our_db_provider
+            logout:
+                path: /logout
+                target: /
+#                pattern: ^/users
+            # https://symfony.com/doc/current/security/form_login_setup.html
+            #form_login: ~
+    access_control:
+        - { path: ^/users, roles: ROLE_USER }
+        - { path: ^/admin, roles: ROLE_ADMIN }
+        - { path: ^/user/new, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+
+
+
+
             # activate different ways to authenticate
 
             # https://symfony.com/doc/current/security.html#a-configuring-how-your-users-will-authenticate

@@ -5,3 +5,6 @@ app:
 api:
     resource: '@AppBundle/Resources/config/routing_api.yml'
     prefix: /api # Tout ce qui commence par /api dans l'url
+
+logout:
+    path: /logout

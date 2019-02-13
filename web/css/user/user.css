@@ -37,6 +37,11 @@ header{
     font-size: 36px;
 }
 
+header span{
+    font-size: 20px;
+    float: right;
+}
+
 #body-wrapper{
     display: flex;
     flex-direction: row;

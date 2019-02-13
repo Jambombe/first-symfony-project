@@ -21,6 +21,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
 /**
  * Class UserController
@@ -94,7 +95,20 @@ class UserController extends Controller
 
         if ($form->isSubmitted() && $form->isValid()){
 
-            $user->setRegistrationDate(new \DateTime());
+//            $user->setRegistrationDate(new \DateTime());
+
+            /** @var User $user */
+            $user = $newProfileImage->getUser();
+
+            $token = new UsernamePasswordToken(
+                $user,
+                $user->getPassword(),
+                'our_db_provider',
+                $user->getRoles()
+            );
+
+            $this->get('security.token_storage')->setToken($token);
+            $this->get('session')->set('_security_main', serialize($token));
 
 //            $urlImage = $form['url_image']->getData();
 
@@ -189,7 +203,9 @@ class UserController extends Controller
     /**
      * @Route("/user/{id}", name="user_profile")
      * @param User $user
+     * @param Post $post
      * @return Response
+     * @Security("user.getEmail() == post.getAuthorEmail()")
      */
 //    public function userProfileAction($id)
     public function userProfileAction(User $user = null) // = null pour mettre valeur par defaut
@@ -287,7 +303,7 @@ class UserController extends Controller
     /**
      * @Route("/group/{groupName}/users")
      */
-    public function usersInGroup($groupName, EntityManagerInterface $em)
+    public function usersInGroupAction($groupName, EntityManagerInterface $em)
     {
         $users = $em->getRepository(User::class)->getUsersInGroup($groupName);
 
@@ -303,7 +319,7 @@ class UserController extends Controller
     /**
      * @Route("users/less-than-two-images")
      */
-    public function lessThanTwoPictures(EntityManagerInterface $em)
+    public function lessThanTwoPicturesAction(EntityManagerInterface $em)
     {
         $users = $em->getRepository(User::class)->lessThanNbPictures(2);
 
@@ -327,6 +343,14 @@ class UserController extends Controller
         array_push($array, array('prenom'=>'k', 'age'=> 11));
 
         return $array;
+    }
+
+    /**
+     * @Route("/login")
+     */
+    public function loginAction()
+    {
+
     }
 
     private function loadStudentsV2()
